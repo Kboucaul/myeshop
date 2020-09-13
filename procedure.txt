@@ -1,3 +1,11 @@
+====================================================================================================
+                            INSTALLATION
+====================================================================================================
+
+
+====================================================================================================
+                    BASE DE DONNEES ET ENTITES
+====================================================================================================
 Création des entités (tables de la base de données)
     -1/ Verifier que mysql activé avec Wamp
     -2/ Modifier chemin de la base de données dans .env
@@ -7,4 +15,65 @@ Création des entités (tables de la base de données)
     -6/ On met a jour la base de données avec "php bin/console doctrine:schema:update --dump-sql"
         Puis
         "php bin/console doctrine:schema:update --force
-    
+
+====================================================================================================
+                    WEBPACK POUR NOS ASSETS
+====================================================================================================
+    -1/ On installe webpack-encore (pour fichiers javascript et css) avec :
+         "composer require symfony/webpack-encore-bundle"
+         Puis
+         "npm install"
+         (Webpack va importer le strict minimum sur chaque page)
+         /!\ A chaque modif on doit faire un : "yarn run encore dev" (ajout de --watch pour le faire "automatiquement)
+
+====================================================================================================
+                     CONTROLLER et Webpack (suite)
+====================================================================================================
+    -1/ Création de notre premier controller avec : 
+        "php bin/console make:controller [nomController] (ex HomepageController)
+            ==> Création d'un controller et d'un template
+    -2/ On va inclure le css dans chaque page
+        => "{{ ecore_entry_link_tags('app) }} dans le fichier twig : base.html.twig)
+    -3/ On va inclure le js dans chaque page
+        => "{{ ecore_entry_script_tags('app) }} dans le fichier twig : base.html.twig)
+    -4/ On installe bootstrap avec yarn add bootsrap (installé dans les nodes modules)
+    -5/ On va dans assets/js/app.js
+        import 'bootsrap';
+        -> Retourne une erreur avec Jquery
+        On va dans webpack config et on décommente
+        ".autoProvidejQuery
+        Relancer yarn run encore dev
+        =>encore une erreur
+            =>npm install --save jquery popper.js
+        Relancer yarn run encore dev
+        =>npm install --save bootstrap
+        @import "~bootstrap"; dans app.css
+        Relancer yarn run encore dev
+
+====================================================================================================
+                     REPOSITORY
+====================================================================================================
+
+    -1/ On ajoute des champs a notre bdd
+    -2/ On doit récuperer ce champs dans notre controller (accueil)
+        Dans HomepageController
+        1-/ On recupere le manager
+            => $em = $this->getDoctrine()->getManager();
+
+        2-/ On recupere notre repo (ici ProductRepository) et tous les produits (avec findAll)
+            $product = $em->getRepository(Product::class)->findAll();
+            (on oublie pas d'importer la classe)
+
+        3-/ Ensuite on peut passer notre variable product a notre template twig
+            return $this->render('homepage/index.html.twig', [
+                'product' => $product,
+            ]);
+        4-/ Dans twig on peut donc boucler sur cette variable avec un 
+        {% for product in products} 
+            {{ product.name }}
+            ...
+        {% endfor %}
+
+        
+
+        
