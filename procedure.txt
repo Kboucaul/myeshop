@@ -1,0 +1,10 @@
+Création des entités (tables de la base de données)
+    -1/ Verifier que mysql activé avec Wamp
+    -2/ Modifier chemin de la base de données dans .env
+    -3/ Créer la base de données avec : "php bin/console doctrine:database:create"
+    -4/ On met a jour la base de données avec : "php bin/console doctrine:schema:update --dump-sql"
+    -5/ On crée nos entités : "php bin/console make:entity
+    -6/ On met a jour la base de données avec "php bin/console doctrine:schema:update --dump-sql"
+        Puis
+        "php bin/console doctrine:schema:update --force
+    
