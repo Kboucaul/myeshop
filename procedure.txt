@@ -74,6 +74,23 @@ Création des entités (tables de la base de données)
             ...
         {% endfor %}
 
-        
+ ====================================================================================================
+                     GESTION DES IMAGES
+====================================================================================================
+       
+        1-/ On utilise le composant Asset de symfony
+        2-/ On crée dans /assets un dossier /images 
+        3-/ on y stockera nos images
+        4-/ Par contre, ce dossier doit etre dans /public donc
+            => on va dans webpack.config et on ajoute :
+               .copyFiles({
+                    from: 'assets/images',
+                    to: 'images/[path][name].[hash:8].[ext]',
+                    pattern: /\.(png|jpg|jpeg)$/
+                })
+        5-/ On relance yarn run encore dev
+        6-/ On peut changer l'image dans index.html.twig
+        ==>
+            <img src="{{ asset("build/images/" ~ product.image) }}" alt="{{product.image}}" height="300" width="350"/>
 
         
