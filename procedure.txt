@@ -93,4 +93,63 @@ Création des entités (tables de la base de données)
         ==>
             <img src="{{ asset("build/images/" ~ product.image) }}" alt="{{product.image}}" height="300" width="350"/>
 
-        
+====================================================================================================
+                     INSCRIPTION
+====================================================================================================
+        1-/ Symfony nous simplifie la chose avec la commande : 
+            php bin/console make:user 
+                => crée un utilisateur (ici on choisira email comme champ unique)
+                (l'user a quelques props (email, id, password et role))
+                Cela a crée un fichier security.yaml
+        2-/ Création d'un formulaire d'inscription 
+            php bin/console make:registration-form
+        3-/ On obtient un controller, une entité et un template twig
+        4-/ On ameliore le design du form en allant dans /config/package/twig.yaml
+            =>  twig:
+                    form_themes: ['bootstrap_4_layout.html.twig']
+        5-/ Pour faire marcher le form on doit update la base de données
+            php bin/console doctrine:schema:update --dump-sql
+             puis
+            php bin/console doctrine:schema:update --force
+        6-/ Pour gerer la connexion automatique
+            -> On va dans le RegistrationController
+            =>
+                $token = new UsernamePasswordToken($user, null, 'main', array('ROLE_USER'));
+                $this->get('security.token_storage')->setToken($token);
+                $this->get('session')->set('_security_main', serialize($token));
+
+====================================================================================================
+                     CONNEXION
+====================================================================================================
+
+        1-/ Formulaire de connexion
+            => php bin/console make:auth
+        2-/ Dans AppAuthenticator.php(dans security)
+            decommenter : 
+                return new RedirectResponse($this->urlGenerator->generate('homepage'));
+            supprimer :
+                throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        3-/ On veut afficher les liens connexion et inscription que si on est pas logué
+            On crée un nouveau controller
+            (ProfileController)
+        4-/ Dans base.html.twig
+             {% if app.user %}
+                    <a class="text-white" href="{{ path('profile') }}">Mon profil</a>
+                    <a class="text-white btn btn-danger" href="{{ path('logout') }}">Deconnexion</a>
+                {% else %}
+                    <a class="text-white" href="{{ path('register') }}">Inscription</a>
+                    <a class="text-white" href="{{ path('login') }}">Connexion</a>
+                {% endif %}
+
+
+====================================================================================================
+                     PAGE DES PRODUITS
+====================================================================================================
+        1-/ On crée un controller ProductController
+        2-/ On veut change rla route en /product/{id}
+            => Car on  veut que chaque produit ait une route spécifique
+        3-/ On recupere par injection le produit 
+           
+           => public function index(Product $product)
+
+       
